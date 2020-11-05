@@ -1,0 +1,56 @@
+---
+title: "Chaff"
+author: "Daniel Sproston"
+date: "04/11/2020"
+output: html_document
+---
+##Setup
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.retina = 3)
+```
+
+```{r packages}
+library(tidyverse)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(stringr)
+library(forcats)
+library(janitor)
+library(multiway)
+```
+
+```{r Data}
+setwd("~/University/Data Analysis Y4/chaffworkshop")
+chaff1 <- read.table("chaff.txt", header = T) 
+```
+
+```{r Data tidy}
+chaff <- gather(data = chaff1, key = "sex", value = "mass")
+```
+#Add a code chunk to create function for calculating the SS(x) of all the mass values. You should be able to call it with
+
+```{r Data SSx}
+sum(chaff$mass)
+```
+
+```{r Data SSx}
+ sum_sq <- function(df, measure) {
+  df %>% summarise(ss = sum(({{measure}} - mean({{measure}}))^2))
+}
+
+sum_sq(chaff, mass)
+```
+```{r Data SSx}
+sum_sq <- function(df, measure, group) {
+  df %>% group_by({{ group }}) %>% 
+    summarise(ss = sum(({{measure}} - mean({{measure}}))^2))
+}
+
+sum_sq(chaff, mass, sex)
+```
